@@ -14,7 +14,7 @@ public class Motor : MonoBehaviour
     // Rotation
     public float MinRotationSpeed = .5f;
     public float MaxRotationSpeed = 2f;
-
+    
     // The target position that the vehicle is driving towards
     public Vector3 TargetPosition = Vector3.zero;
     
@@ -139,5 +139,17 @@ public class Motor : MonoBehaviour
         
         // Do rotation
         _rb.MoveRotation(_driveRotation);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Boundary"))
+        {
+            HandleBoundaryCollision(collision);
+        }
+    }
+
+    private void HandleBoundaryCollision(Collision collision)
+    {
     }
 }
