@@ -8,10 +8,12 @@ public class Motor : MonoBehaviour
     // Speed controls
     public float MaxSpeed = 10f;
     public float Speed = 0f;
-    public float TimeToMaxSpeed = 1f;
+    public float TimeToMaxSpeed = 2f;
+    public float TimeToStop = .5f;
     
     // Rotation
-    public float RotationSpeed = 3f;
+    public float MinRotationSpeed = .5f;
+    public float MaxRotationSpeed = 2f;
 
     // The target position that the vehicle is driving towards
     public Vector3 TargetPosition = Vector3.zero;
@@ -93,7 +95,7 @@ public class Motor : MonoBehaviour
     /// </summary>
     private void Decelerate()
     {
-        Speed -= (MaxSpeed / TimeToMaxSpeed) * Time.deltaTime;
+        Speed -= (MaxSpeed / TimeToStop) * Time.deltaTime;
         if (Speed <= 0f)
         {
             Speed = 0f;
@@ -107,12 +109,19 @@ public class Motor : MonoBehaviour
     {
         if (Drive)
         {
-            var rotationSpeed = RotationSpeed * Time.deltaTime;
+            // Scale the rotation speed by the max speed
+            var rotationSpeed = Mathf.Lerp(MinRotationSpeed, MaxRotationSpeed, Speed / MaxSpeed);
+            rotationSpeed *= Time.deltaTime;
+            
+            // Calculate new direction to face
             var newDirection = Vector3.RotateTowards(transform.forward, _targetDirection, rotationSpeed, 0f);
+            
+            // Calculate rotation towards new direction
             _driveRotation = Quaternion.LookRotation(newDirection);
         }
         else
         {
+            // No rotation
             _driveRotation = Quaternion.LookRotation(transform.forward);
         }
     }
@@ -129,7 +138,6 @@ public class Motor : MonoBehaviour
         _rb.MovePosition(_rb.position + driveVelocity * Time.deltaTime);
         
         // Do rotation
-        
         _rb.MoveRotation(_driveRotation);
     }
 }
