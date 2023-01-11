@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         UpdateMousePosition();
+        SetTargetPosition();
         HandleInput();
     }
 
@@ -43,9 +44,14 @@ public class PlayerController : MonoBehaviour
         {
             _mousePosition = Vector3.zero;
         }
+    }
 
-        // Update the motor's target position
-        _motor.TargetPosition = _mousePosition;
+    /// <summary>
+    /// Set the target position on the motor.
+    /// </summary>
+    private void SetTargetPosition()
+    {
+        _motor.SetTargetPosition(_mousePosition);
     }
 
     /// <summary>
